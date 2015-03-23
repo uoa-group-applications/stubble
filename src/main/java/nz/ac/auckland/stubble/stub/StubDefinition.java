@@ -4,8 +4,9 @@ import nz.ac.auckland.morc.MorcBuilder;
 import nz.ac.auckland.morc.endpointoverride.CxfEndpointOverride;
 import nz.ac.auckland.morc.endpointoverride.EndpointOverride;
 import nz.ac.auckland.morc.endpointoverride.UrlConnectionOverride;
-import nz.ac.auckland.morc.processor.MultiProcessor;
-import nz.ac.auckland.morc.processor.SelectorProcessor;
+import nz.ac.auckland.morc.processor.*;
+import nz.ac.auckland.morc.resource.HeadersTestResource;
+import nz.ac.auckland.morc.resource.TestResource;
 import org.apache.camel.Exchange;
 import org.apache.camel.Predicate;
 import org.apache.camel.Processor;
@@ -13,6 +14,7 @@ import org.apache.camel.util.URISupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.mail.search.HeaderTerm;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
@@ -71,6 +73,7 @@ public class StubDefinition {
         private SelectorProcessor selectorProcessor;
         private Processor stubFeedPreprocessor;
         private Collection<EndpointOverride> endpointOverrides = new ArrayList<>();
+
         /**
          * @param endpointUri A Camel Endpoint URI to listen to for expected messages
          */
@@ -120,6 +123,15 @@ public class StubDefinition {
             }
             this.processors.get(index).addAll(new ArrayList<>(Arrays.asList(processors)));
             return self();
+        }
+
+        @SuppressWarnings("unchecked")
+        public Builder response(Processor... processors) {
+            return addProcessors(processors);
+        }
+
+        public Builder matchedResponses(MatchedResponseProcessor.MatchedResponse... responses) {
+            return addProcessors(new MatchedResponseProcessor(responses));
         }
 
         /**
@@ -197,6 +209,7 @@ public class StubDefinition {
             return new StubDefinition(this);
         }
 
+        @SuppressWarnings("unchecked")
         protected Builder self() {
             return (Builder) this;
         }
@@ -211,10 +224,4 @@ public class StubDefinition {
         this.description = builder.description;
         this.stubFeedPreprocessor = builder.stubFeedPreprocessor;
     }
-    //responseBody
-    //responseHeaders
-    //httpError
-    //soapFault
-    //exception
-
 }

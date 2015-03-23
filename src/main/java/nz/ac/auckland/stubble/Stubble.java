@@ -1,17 +1,32 @@
 package nz.ac.auckland.stubble;
 
+import nz.ac.auckland.morc.MorcMethods;
 import nz.ac.auckland.stubble.stub.StubDefinition;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.properties.PropertiesComponent;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Stubble {
+public abstract class Stubble implements MorcMethods {
 
     private List<StubDefinition.StubDefinitionBuilderInit> stubBuilders = new ArrayList<>();
+    private String[] springContextPaths = new String[]{};
+    private String propertiesLocationPath;
+
+    protected AbstractApplicationContext applicationContext;
+    protected abstract AbstractApplicationContext createApplicationContext();
+
+    public Stubble() {
+        configureXmlUnit();
+    }
 
     protected abstract void configure();
 
@@ -29,7 +44,50 @@ public abstract class Stubble {
         return builder;
     }
 
-    //add spring support
+    /**
+     * Override this to return a list of Spring context paths on the classpath
+     *
+     * @return An array of classpath Spring XML file references
+     */
+    public String[] getSpringContextPaths() {
+        return springContextPaths;
+    }
+
+    /**
+     * Override this to return a path to a properties file for managing Camel endpoint URIs
+     *
+     * @return A string path to a properties file
+     */
+    public String getPropertiesLocation() {
+        return propertiesLocationPath;
+    }
+
+    protected AbstractXmlApplicationContext createApplicationContext() {
+        return new ClassPathXmlApplicationContext(getSpringContextPaths());
+    }
+
+    @Override
+    protected CamelContext createCamelContext() throws Exception {
+        CamelContext context = super.createCamelContext();
+
+        String propertiesLocation = getPropertiesLocation();
+        if (propertiesLocation != null) {
+            PropertiesComponent properties = new PropertiesComponent();
+            properties.setLocation(propertiesLocation);
+            context.addComponent("properties", properties);
+        }
+
+        return context;
+    }
+
+    /**
+     * Configure XML Unit parameters for comparing XML - override this to adjust the defaults
+     */
+    protected void configureXmlUnit() {
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLUnit.setNormalizeWhitespace(true);
+        XMLUnit.setIgnoreComments(true);
+    }
 
     public void run() throws Exception {
         CamelContext context = new DefaultCamelContext();
@@ -82,8 +140,8 @@ public abstract class Stubble {
 /*
   new Stubble() {
     public void configure() {
-        stub("...").responseBody(...)
-
+        stub("http:/adsffsad").response(xml(adsfsfdafsd), headers...).response(body, headers...)
+                   .responseBody().responseHeaders
         stub("...")....
     }
   }.run()
