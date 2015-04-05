@@ -1,20 +1,11 @@
 package nz.ac.auckland.stubble.stub;
 
-import nz.ac.auckland.morc.MorcBuilder;
 import nz.ac.auckland.morc.endpointoverride.CxfEndpointOverride;
 import nz.ac.auckland.morc.endpointoverride.EndpointOverride;
 import nz.ac.auckland.morc.endpointoverride.UrlConnectionOverride;
 import nz.ac.auckland.morc.processor.*;
-import nz.ac.auckland.morc.resource.HeadersTestResource;
-import nz.ac.auckland.morc.resource.TestResource;
-import org.apache.camel.Exchange;
-import org.apache.camel.Predicate;
 import org.apache.camel.Processor;
 import org.apache.camel.util.URISupport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.mail.search.HeaderTerm;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
@@ -26,8 +17,6 @@ import java.util.*;
  * @author David MacDonald <d.macdonald@auckland.ac.nz>
  */
 public class StubDefinition {
-    private static final Logger logger = LoggerFactory.getLogger(StubDefinition.class);
-
     private String description;
     private String endpointUri;
     private SelectorProcessor selectorProcessor;
