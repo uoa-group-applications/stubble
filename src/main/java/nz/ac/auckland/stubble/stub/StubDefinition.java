@@ -114,13 +114,29 @@ public class StubDefinition {
             return self();
         }
 
+        /**
+         * @param processors The processors for generating the response message back to the client
+         */
         @SuppressWarnings("unchecked")
         public Builder response(Processor... processors) {
             return addProcessors(processors);
         }
 
+        /**
+         * @param responses The set of matched responses that will be returned back to the client -- if there are
+         *                  no such matches then nothing will be changed
+         */
         public Builder matchedResponses(MatchedResponseProcessor.MatchedResponse... responses) {
             return addProcessors(new MatchedResponseProcessor(responses));
+        }
+
+        /**
+         * @param defaultMatchedResponse The default response to send back to the client if there is no such match
+         * @param responses              The set of matched responses that will be returned back to the client
+         */
+        public Builder matchedResponses(MatchedResponseProcessor.DefaultMatchedResponse defaultMatchedResponse,
+                                        MatchedResponseProcessor.MatchedResponse... responses) {
+            return addProcessors(new MatchedResponseProcessor(defaultMatchedResponse,responses));
         }
 
         /**
@@ -148,16 +164,9 @@ public class StubDefinition {
         }
 
         /**
-         * @return A processor that will be applied before the exchange is sent through to the mock endpoint
-         */
-        public Processor getStubFeedPreprocessor() {
-            return stubFeedPreprocessor;
-        }
-
-        /**
          * @param stubFeedPreprocessor A processor that will be applied before the exchange is sent through to the mock endpoint
          */
-        public Builder stubFeedPreprocessor(Processor stubFeedPreprocessor) {
+        public Builder preprocessor(Processor stubFeedPreprocessor) {
             this.stubFeedPreprocessor = stubFeedPreprocessor;
             return self();
         }

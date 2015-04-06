@@ -1,3 +1,5 @@
+package nz.ac.auckland.stubble
+
 import nz.ac.auckland.stubble.Stubble
 
 new Stubble() {
