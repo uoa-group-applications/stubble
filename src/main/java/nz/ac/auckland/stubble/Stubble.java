@@ -156,6 +156,7 @@ public abstract class Stubble implements MorcMethods {
             synchronized (this) {
                 this.wait();
             }
+            context.stop();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
