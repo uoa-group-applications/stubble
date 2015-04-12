@@ -3,6 +3,9 @@ package nz.ac.auckland.stubble.stub;
 import nz.ac.auckland.morc.endpointoverride.CxfEndpointOverride;
 import nz.ac.auckland.morc.endpointoverride.EndpointOverride;
 import nz.ac.auckland.morc.endpointoverride.UrlConnectionOverride;
+import nz.ac.auckland.morc.processor.MatchedResponseProcessor;
+import nz.ac.auckland.morc.processor.MultiProcessor;
+import nz.ac.auckland.morc.processor.SelectorProcessor;
 import org.apache.camel.Processor;
 import org.apache.camel.util.URISupport;
 
