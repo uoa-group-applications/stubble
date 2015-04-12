@@ -9,7 +9,7 @@
     <groupId>nz.ac.auckland.stubble</groupId>
     <artifactId>stubble</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>stubble</name>
     <description>Simple Stubbing Using Apache Camel</description>
     <properties>
@@ -97,6 +97,6 @@
             scm:git:git@github.com:uoa-group-applications/stubble.git
         </developerConnection>
         <url>git@github.com:uoa-group-applications/stubble.git</url>
-        <tag>stubble-1.0.0</tag>
+        <tag>stubble-1.1.0</tag>
     </scm>
 </project>
