@@ -16,19 +16,19 @@ public class StubDefinitionTest extends Assert implements MorcMethods {
 
     @Test
     public void testSimpleStub() throws Exception {
-        StubDefinition stub = new StubDefinition.StubDefinitionBuilder("foo","foo.com")
+        StubDefinition stub = new StubDefinition.StubDefinitionBuilder("foo", "foo.com")
                 .response(text("foo"))
-                .addRepeatedProcessor(headers(header("12","34")))
+                .addRepeatedProcessor(headers(header("12", "34")))
                 .response(text("baz"), headers(header("foo", "baz")))
                 .addProcessors(text("moo"))
-                .addProcessors(2,headers(header("1", "2"))).build();
+                .addProcessors(2, headers(header("1", "2"))).build();
 
-        assertEquals("foo",stub.getDescription());
+        assertEquals("foo", stub.getDescription());
 
         Exchange e = new DefaultExchange(new DefaultCamelContext());
 
         stub.getSelectorProcessor().process(e);
-        assertEquals("foo",e.getIn().getBody(String.class));
+        assertEquals("foo", e.getIn().getBody(String.class));
         assertEquals("34", e.getIn().getHeader("12"));
 
         stub.getSelectorProcessor().process(e);
@@ -42,7 +42,7 @@ public class StubDefinitionTest extends Assert implements MorcMethods {
         assertEquals("34", e.getIn().getHeader("12"));
 
         stub.getSelectorProcessor().process(e);
-        assertEquals("foo",e.getIn().getBody(String.class));
+        assertEquals("foo", e.getIn().getBody(String.class));
         assertEquals("34", e.getIn().getHeader("12"));
     }
 
@@ -51,9 +51,10 @@ public class StubDefinitionTest extends Assert implements MorcMethods {
         StubDefinition stub = new StubDefinition.StubDefinitionBuilder("foo", "foo.com")
                 .preprocessor(new Processor() {
                     int count = 0;
+
                     @Override
                     public void process(Exchange exchange) throws Exception {
-                        exchange.getIn().setHeader("preprocessed",count++);
+                        exchange.getIn().setHeader("preprocessed", count++);
                     }
                 })
                 .matchedResponses(defaultResponse(text("123")),
@@ -66,25 +67,25 @@ public class StubDefinitionTest extends Assert implements MorcMethods {
         stub.getSelectorProcessor().process(e);
         stub.getStubFeedPreprocessor().process(e);
         assertTrue(xml("<baz/>").matches(e));
-        assertEquals(0,e.getIn().getHeader("preprocessed"));
+        assertEquals(0, e.getIn().getHeader("preprocessed"));
 
         e.getIn().setBody("foo");
         stub.getSelectorProcessor().process(e);
         stub.getStubFeedPreprocessor().process(e);
         assertTrue(xml("<foo/>").matches(e));
-        assertEquals(1,e.getIn().getHeader("preprocessed"));
+        assertEquals(1, e.getIn().getHeader("preprocessed"));
 
         e.getIn().setBody("something");
         stub.getSelectorProcessor().process(e);
         stub.getStubFeedPreprocessor().process(e);
         assertTrue(text("123").matches(e));
-        assertEquals(2,e.getIn().getHeader("preprocessed"));
+        assertEquals(2, e.getIn().getHeader("preprocessed"));
 
         e.getIn().setBody("baz");
         stub.getSelectorProcessor().process(e);
         stub.getStubFeedPreprocessor().process(e);
         assertTrue(xml("<baz/>").matches(e));
-        assertEquals(3,e.getIn().getHeader("preprocessed"));
+        assertEquals(3, e.getIn().getHeader("preprocessed"));
     }
 
     public void testMatchedResponsesNoDefault() throws Exception {
@@ -109,7 +110,7 @@ public class StubDefinitionTest extends Assert implements MorcMethods {
 
     @Test
     public void testCustomSelector() throws Exception {
-        StubDefinition stub = new StubDefinition.StubDefinitionBuilder("foo","foo.com")
+        StubDefinition stub = new StubDefinition.StubDefinitionBuilder("foo", "foo.com")
                 .response(text("foo"))
                 .response(text("baz"))
                 .response(text("moo"))
@@ -134,11 +135,12 @@ public class StubDefinitionTest extends Assert implements MorcMethods {
 
     @Test
     public void testEndpointOverride() throws Exception {
-        StubDefinition stub = new StubDefinition.StubDefinitionBuilder("foo","foo.com")
+        StubDefinition stub = new StubDefinition.StubDefinitionBuilder("foo", "foo.com")
                 .response(text("foo"))
-                .addEndpointOverride(endpoint -> { }).build();
+                .addEndpointOverride(endpoint -> {
+                }).build();
 
-        assertEquals(3,stub.getEndpointOverrides().size());
+        assertEquals(3, stub.getEndpointOverrides().size());
 
         boolean cxfOverride = false;
         boolean connectionOverride = false;

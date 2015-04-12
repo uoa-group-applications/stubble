@@ -3,9 +3,9 @@ package nz.ac.auckland.stubble.stub;
 import nz.ac.auckland.morc.endpointoverride.CxfEndpointOverride;
 import nz.ac.auckland.morc.endpointoverride.EndpointOverride;
 import nz.ac.auckland.morc.endpointoverride.UrlConnectionOverride;
-import nz.ac.auckland.morc.processor.*;
 import org.apache.camel.Processor;
 import org.apache.camel.util.URISupport;
+
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
@@ -81,8 +81,8 @@ public class StubDefinition {
         }
 
         /**
-         * @param selectorProcessorClass    A class for selecting which of the processors to use for handling a response.
-         *                                  The default implementation loops through the processors
+         * @param selectorProcessorClass A class for selecting which of the processors to use for handling a response.
+         *                               The default implementation loops through the processors
          */
         public Builder selector(Class<? extends SelectorProcessor> selectorProcessorClass) {
             this.selectorProcessorClass = selectorProcessorClass;
@@ -136,7 +136,7 @@ public class StubDefinition {
          */
         public Builder matchedResponses(MatchedResponseProcessor.DefaultMatchedResponse defaultMatchedResponse,
                                         MatchedResponseProcessor.MatchedResponse... responses) {
-            return addProcessors(new MatchedResponseProcessor(defaultMatchedResponse,responses));
+            return addProcessors(new MatchedResponseProcessor(defaultMatchedResponse, responses));
         }
 
         /**

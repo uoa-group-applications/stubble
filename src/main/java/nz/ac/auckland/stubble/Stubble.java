@@ -20,7 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Stubble implements MorcMethods {
 
@@ -41,7 +42,7 @@ public abstract class Stubble implements MorcMethods {
 
     protected StubDefinition.StubDefinitionBuilder stub(String uri) {
         int stubCount = stubBuilders.size();
-        return stub("Stub " + stubCount,uri);
+        return stub("Stub " + stubCount, uri);
     }
 
     /**
@@ -115,7 +116,7 @@ public abstract class Stubble implements MorcMethods {
                             public void configure() throws Exception {
                                 StubDefinition stub = b.build();
 
-                                logger.info("Starting stub {} for endpoint {}", stub.getDescription(),stub.getEndpointUri());
+                                logger.info("Starting stub {} for endpoint {}", stub.getDescription(), stub.getEndpointUri());
 
                                 Endpoint targetEndpoint = context.getEndpoint(stub.getEndpointUri());
                                 for (EndpointOverride override : stub.getEndpointOverrides())

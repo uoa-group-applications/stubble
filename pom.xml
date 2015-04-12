@@ -15,7 +15,7 @@
     <description>Simple Stubbing Using Apache Camel</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	    <morc-version>3.2.1-SNAPSHOT</morc-version>
+        <morc-version>3.3.0</morc-version>
         <junit-version>4.11</junit-version>
     </properties>
     <developers>
@@ -42,7 +42,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit-version}</version>
-	        <scope>test</scope>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
@@ -60,6 +60,26 @@
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>2.2.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.4.201502262128</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

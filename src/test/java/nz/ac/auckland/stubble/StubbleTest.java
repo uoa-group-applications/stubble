@@ -21,17 +21,18 @@ public class StubbleTest extends Assert {
                                     .response(text("baz"));
                         }
                     }.run();
-                } catch(Exception e) {
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-            }}.start();
+            }
+        }.start();
 
-        //wait for stubble to start (todo: make this better)
+        //wait for stubble to start
         Thread.sleep(5000);
 
-        assertEquals(0,new MorcTestBuilder() {
+        assertEquals(0, new MorcTestBuilder() {
             public void configure() {
-                syncTest("ping stubs","http://localhost:8080")
+                syncTest("ping stubs", "http://localhost:8080")
                         .request(text("a"))
                         .request(text("b"))
                         .request(text("c"))
@@ -63,17 +64,18 @@ public class StubbleTest extends Assert {
                                     .response(json("{ \"baz\":\"foo\" }"));
                         }
                     }.run();
-                } catch(Exception e) {
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-            }}.start();
+            }
+        }.start();
 
-        //wait for stubble to start (todo: make this better)
+        //wait for stubble to start
         Thread.sleep(5000);
 
-        assertEquals(0,new MorcTestBuilder() {
+        assertEquals(0, new MorcTestBuilder() {
             public void configure() {
-                syncTest("ping stubs","http://localhost:8080")
+                syncTest("ping stubs", "http://localhost:8080")
                         .request(text("a"))
                         .request(text("b"))
                         .request(text("c"))
@@ -81,7 +83,7 @@ public class StubbleTest extends Assert {
                         .expectation(text("baz"))
                         .expectation(text("foo"));
 
-                syncTest("ping stubs","http://localhost:8081")
+                syncTest("ping stubs", "http://localhost:8081")
                         .request(text("a"))
                         .request(text("b"))
                         .request(text("c"))
@@ -89,7 +91,7 @@ public class StubbleTest extends Assert {
                         .expectation(xml("<baz/>"))
                         .expectation(xml("<foo/>"));
 
-                syncTest("ping stubs","http://localhost:8082")
+                syncTest("ping stubs", "http://localhost:8082")
                         .request(text("a"))
                         .request(text("b"))
                         .request(text("c"))
@@ -115,42 +117,108 @@ public class StubbleTest extends Assert {
 
                                         @Override
                                         public void process(Exchange exchange) throws Exception {
-                                            if (count++ % 2 == 0) exchange.getIn().setHeader("a","b");
+                                            if (count++ % 2 == 0) exchange.getIn().setHeader("a", "b");
                                         }
                                     })
                                     .response(text("foo"))
                                     .response(text("baz"));
                         }
                     }.run();
-                } catch(Exception e) {
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-            }}.start();
+            }
+        }.start();
 
-        //wait for stubble to start (todo: make this better)
+        //wait for stubble to start
         Thread.sleep(5000);
 
-        assertEquals(0,new MorcTestBuilder() {
+        assertEquals(0, new MorcTestBuilder() {
             public void configure() {
-                syncTest("ping stubs","http://localhost:8080")
+                syncTest("ping stubs", "http://localhost:8080")
                         .request(text("a"))
                         .request(text("b"))
                         .request(text("c"))
                         .expectation(headers(header("a", "b")), text("foo"))
                         .expectation(text("baz"))
-                        .expectation(headers(header("a","b")),text("foo"));
+                        .expectation(headers(header("a", "b")), text("foo"));
             }
         }.run());
     }
 
     @Test
     public void testSpringStub() throws Exception {
+        new Thread() {
+            public void run() {
+                try {
+                    new Stubble() {
+                        @Override
+                        protected String[] getSpringContextPaths() {
+                            return new String[]{"/context.xml"};
+                        }
 
+                        @Override
+                        protected void configure() {
+                            stub("cxf:bean:pingService")
+                                    .response(xml(classpath("/data/pingResponseCxf1.xml")));
+                        }
+                    }.run();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }.start();
+
+        //wait for stubble to start
+        Thread.sleep(5000);
+
+        assertEquals(0, new MorcTestBuilder() {
+            public void configure() {
+                syncTest("ping stubs", "cxf:http://localhost:9091/pingService")
+                        .request(xml(classpath("/data/pingRequestCxf1.xml")))
+                        .expectation(xml(classpath("/data/pingResponseCxf1.xml")));
+            }
+        }.run());
     }
 
     @Test
     public void testProperties() throws Exception {
+        new Thread() {
+            public void run() {
+                try {
+                    new Stubble() {
+                        @Override
+                        protected String getPropertiesLocation() {
+                            return "/test.properties";
+                        }
 
+                        @Override
+                        protected void configure() {
+                            stub("{{endpoint}}")
+                                    .response(text("foo"))
+                                    .response(text("baz"));
+                        }
+                    }.run();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }.start();
+
+        //wait for stubble to start
+        Thread.sleep(5000);
+
+        assertEquals(0, new MorcTestBuilder() {
+            public void configure() {
+                syncTest("ping stubs", "http://localhost:8085")
+                        .request(text("a"))
+                        .request(text("b"))
+                        .request(text("c"))
+                        .expectation(text("foo"))
+                        .expectation(text("baz"))
+                        .expectation(text("foo"));
+            }
+        }.run());
     }
 
 }
