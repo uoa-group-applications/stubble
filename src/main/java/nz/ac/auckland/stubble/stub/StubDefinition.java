@@ -17,7 +17,7 @@ import java.util.*;
 /**
  * A general class for declaring stubs
  *
- * @author David MacDonald <d.macdonald@auckland.ac.nz>
+ * @author David MacDonald - d.macdonald@auckland.ac.nz
  */
 public class StubDefinition {
     private String description;
